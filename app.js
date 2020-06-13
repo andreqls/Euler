@@ -2,7 +2,7 @@ var main = function () {
     "use strict";
 
     /* function call */
-    $("main").append(dummyFunc(0).toString())
+    $("main").append(dummyFunc(0).toString());
 
 };
 
