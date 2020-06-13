@@ -2,13 +2,21 @@ var main = function () {
     "use strict";
 
     /* function call */
-    $("main").append(dummyFunc(0).toString())
+    $("main").append(sumSqDif(1,100).toString())
 
 };
 
 $(document).ready(main);
 
 /* functions */
-var dummyFunc = function (input) {
-    return 0;
+var sumSqDif = function (min,max) {
+	var a,b,sum=0;
+	for (a=min;a<=max;a++) {
+		for (b=min;b<=max;b++) {
+			if (a!=b) sum+=a*b;
+		}
+	}
+    return sum;
 };
+
+
