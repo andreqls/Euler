@@ -13,54 +13,6 @@ var dummyFunc = function (input) {
     return 0;
 };
 
-var PIND=1,PRIMES=[2,3];
-
-var inOrdered = function (value, ordlist) {
-	if (ordlist[findClosest(value, ordlist)]==value) return true;
-	return false;
-};
-
-
-var maxClass = function (width) {
-	var i,j,k,maxpat=0,max=0,freqs,primes=primeSpace(width);
-	for (i=0;i<primes.length;i++) {
-		freqs={};
-		for (j=i+1;j<primes.length;j++) {
-			k=getEqualDigits(primes[i],primes[j]); // k := pattern
-			if ((k%10)!=0) {
-				if (k in freqs) freqs[k]++;
-				else freqs[k]=1;
-			}
-			console.log(primes[i],primes[j],k,freqs[k]);
-			if (freqs[k]>max) {
-				max=freqs[k];
-				maxpat=k;
-			}
-		}
-	}
-	console.log(maxpat);
-	return max;
-};
-
-/*
-var inOrdered = function (value, ordlist) { // binary search on ordered list
-	var i,min=0,max=ordlist.length-1;
-	i=Math.floor(ordlist.length/2);
-	while (min<max-1) {
-		if (value==ordlist[i]) return true;
-		if (value<ordlist[i]) {
-			max=i; 
-		}
-		else min=i;
-		i=Math.floor((min+max)/2);
-	}
-	if (value==ordlist[min]) return true;
-	if (value==ordlist[max-1]) return true;
-	if (value==ordlist[max]) return true;
-	return false;
-};
-*/
-
 var isPrime = function (num) {
 	var d;
 	if (num==2) return true;
@@ -69,28 +21,6 @@ var isPrime = function (num) {
 		if (num%d==0) return false;
 	}
 	return true;
-};
-
-var checkIfPrime = function (num) {
-	var d,result;
-	d=PRIMES[PIND]; // largest known prime
-	if (num<=d) {
-		if (inOrdered(num,PRIMES)) return true;
-		return false;
-	}
-	if (num%d==0) result=false;
-	for (d+=2;d<num;d+=2) {
-		if (isPrime(d)) {
-			PRIMES[++PIND]=d; // push d to the list of primes
-			if (num%d==0) result=false; // test if num is composite
-		}
-	}
-	if (result!=false) 
-	{
-		PRIMES[++PIND]=num;
-		return true;
-	}
-	return false;
 };
 
 var minMaxWidth = function (width) {
@@ -103,123 +33,39 @@ var minMaxWidth = function (width) {
 	return { "min":min, "max":max };
 }
 
-/*
-var findClosest = function (value, ordlist) { // binary search on ordered list
-	var old=-1,i=Math.floor(ordlist.length/2);
-	while (i!=old) {
-		if (value==ordlist[i]) return i;
-		old=i;
-		if (value>ordlist[i]) i=Math.floor((i+ordlist.length)/2);
-		else i=Math.floor(i/2);
+var binLike = function (num) {
+	var r,m,binlike=0;
+	for (m=1;num>0;m*=10) {
+		binlike+=m*(num%2);
+		num=Math.floor(num/2);
 	}
-	return i;
-};
-*/
+	return binlike;
+}
 
-/*
-var findClosest = function (value, ordlist) {
-	var i;
-	if (ordlist.length<3) 
-	for (i=ordlist.length;i<ordlist.length;i++) {
-		if (value==ordlist[i]) return i;
+var substitutionPatterns = function (width) {
+	var k,max,patlist=[];
+	max=Math.pow(2,width+1)-1;
+	for (k=1;k<max;k+=2) { // all odd binaries up to 2^(w+1)-1
+/*		b=binLike(k);
+		if (b%10!=0) patlist.push(b); // this check may be useless, hehe...
+		*/
+		patlist.push(binLike(k));
 	}
-	return i;
-};
-*/
-
-var findClosest = function (value, ordlist) { // binary search on ordered list
-	var i,min=0,max=ordlist.length-1;
-	i=Math.floor(ordlist.length/2);
-	while (min<max-1) {
-		if (value==ordlist[i]) return i;
-		if (value<ordlist[i]) {
-			max=i; 
-		}
-		else min=i;
-		i=Math.floor((min+max)/2);
-	}
-	if (value==ordlist[min]) return min;
-	if (value==ordlist[max-1]) return (max-1);
-	if (value==ordlist[max]) return max;
-	return i;
+	return patlist;
 };
 
-
-var primeSpace = function (width) {
-	var range=minMaxWidth(width),minpind,maxpind;
-	checkIfPrime(range.max+10);
-	minpind=findClosest(range.min,PRIMES);
-	if (PRIMES[minpind]<range.min) minpind++;
-	maxpind=findClosest(range.max,PRIMES);
-	return PRIMES.slice(minpind,maxpind+1);
+var substitutionPossible = function (num, width) {
+	return true;
 };
 
-var getEqualDigits = function (a,b) { // b>=a
-	var code=0,multiplier=1;
-	while (b>0) {
-		if ((b-a)%10==0) code=(a%10)*multiplier+code;
-		multiplier*=10;
-		a=Math.floor(a/10);
-		b=Math.floor(b/10);
-	}
-	return code;
-};
-
-/*
-var checkClass = function (num, list) {  // check numeric pattern frequency in a list
-	var count, pattern, max=0;
-	list.forEach(function (item) {
-		pattern=getEqualDigits(num,item);
-		if (pattern!=0) {
-			count=0;
-			list.forEach(function (val) {
-				if (getEqualDigits(pattern,val)==pattern) {
-					count++;
-					console.log(pattern,val,count);
+var checkClass = function (num, width) {
+	var i,j,x,max=Math.pow(10,width)-1,subs=substitutionPatterns(width);	
+	for (x=1;x<max;x++) {
+		for (i=0;i<subs.length;i++) {
+			if (isPrime(x)) {
+				for (j=;j<10;j++) {
 				}
-			});
-			if (count>max) max=count;
-		}
-	});
-	return max;
-}*/
-
-/* String version
-var getEqualDigits = function (a, b) { // b>=a
-	var code='';
-	while (b>0) {
-		if ((b-a)%10==0) code=(a%10).toString()+code;
-		else code='X'+code;
-		a=Math.floor(a/10);
-		b=Math.floor(b/10);
+				if ( isPrime(x+subs[i]) )
 	}
-	return code;
-};
-*/
-
-/*
-var generateCandidates = function (digits, zeros) {
-	var n,space=[];
-	for (n=1;n<(Math.pow(10,digits)-1);n+=2)
-		if (countZeros(n)==zeros) space.push(n);
-	return space;
 };
 
-var countZeros = function (num, width) {
-	var count;
-	for (count=0;num>0;num=Math.floor(num/10)) {
-		if (num%10==0) count++;
-		width--;
-	}
-	if (width>0) count+=width;
-	return count;
-};*/
-
-/*
-var getDigits = function (num) {
-	var diglist = [];
-	num.toString().forEach(function (dig) {
-		digitlist.push(Number(dig));
-	});
-	return diglist;
-};*/
