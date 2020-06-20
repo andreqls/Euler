@@ -18,8 +18,29 @@ var PIND=1,PRIMES=[2,3];
 var inOrdered = function (value, ordlist) {
 	if (ordlist[findClosest(value, ordlist)]==value) return true;
 	return false;
-}
+};
 
+
+var maxClass = function (width) {
+	var i,j,k,maxpat=0,max=0,freqs,primes=primeSpace(width);
+	for (i=0;i<primes.length;i++) {
+		freqs={};
+		for (j=i+1;j<primes.length;j++) {
+			k=getEqualDigits(primes[i],primes[j]); // k := pattern
+			if ((k%10)!=0) {
+				if (k in freqs) freqs[k]++;
+				else freqs[k]=1;
+			}
+			console.log(primes[i],primes[j],k,freqs[k]);
+			if (freqs[k]>max) {
+				max=freqs[k];
+				maxpat=k;
+			}
+		}
+	}
+	console.log(maxpat);
+	return max;
+};
 
 /*
 var inOrdered = function (value, ordlist) { // binary search on ordered list
@@ -81,6 +102,7 @@ var minMaxWidth = function (width) {
 	min+=k/10;
 	return { "min":min, "max":max };
 }
+
 /*
 var findClosest = function (value, ordlist) { // binary search on ordered list
 	var old=-1,i=Math.floor(ordlist.length/2);
@@ -141,9 +163,26 @@ var getEqualDigits = function (a,b) { // b>=a
 		b=Math.floor(b/10);
 	}
 	return code;
-}
+};
 
-
+/*
+var checkClass = function (num, list) {  // check numeric pattern frequency in a list
+	var count, pattern, max=0;
+	list.forEach(function (item) {
+		pattern=getEqualDigits(num,item);
+		if (pattern!=0) {
+			count=0;
+			list.forEach(function (val) {
+				if (getEqualDigits(pattern,val)==pattern) {
+					count++;
+					console.log(pattern,val,count);
+				}
+			});
+			if (count>max) max=count;
+		}
+	});
+	return max;
+}*/
 
 /* String version
 var getEqualDigits = function (a, b) { // b>=a
