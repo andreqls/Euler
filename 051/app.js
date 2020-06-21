@@ -2,7 +2,7 @@ var main = function () {
     "use strict";
 
     /* function call */
-    $("main").append(dummyFunc(0).toString());
+    $("main").append(firstOfClass(8).toString());
 
 };
 
@@ -12,6 +12,20 @@ $(document).ready(main);
 var dummyFunc = function (input) {
     return 0;
 };
+
+var firstOfClass = function (rank) {
+	var w,i,ans;
+	for (w=6;w<10;w++) {
+		ans=getClass(w);
+		if (ans.c==rank) {
+			if (isPrime(ans.v)) return ans.v;
+			for (i=1;i<10;i++) {
+				if (isPrime(varyZeros(ans.v,w,i))) return varyZeros(ans.v,w,i);
+			}
+		}
+	}
+	return 0;
+}
 
 var isPrime = function (num) {
 	var d;
@@ -23,49 +37,32 @@ var isPrime = function (num) {
 	return true;
 };
 
-var minMaxWidth = function (width) {
-	var min=1,max=9,k=1;
-	for (k=10;(width>1);width--) {
-		max+=9*k;
-		k*=10;
+var getClass = function (width) {
+	var i,num,count,max={"v":0,"c":0};
+	for (num=1;num<(Math.pow(10,width)-1);num+=2) {
+		if ( (num.toString()).includes('0') ) {
+			count=0;
+			if ( (num>Math.pow(10,width-1)) && isPrime(num) ) count++;
+			for (i=1;i<10;i++) {
+				if ( isPrime(varyZeros(num,width,i)) ) count++;
+			}
+			if (count>max.c) {
+				max.v=num;
+				max.c=count;
+			}
+		}
 	}
-	min+=k/10;
-	return { "min":min, "max":max };
-}
-
-var binLike = function (num) {
-	var r,m,binlike=0;
-	for (m=1;num>0;m*=10) {
-		binlike+=m*(num%2);
-		num=Math.floor(num/2);
-	}
-	return binlike;
-}
-
-var substitutionPatterns = function (width) {
-	var k,max,patlist=[];
-	max=Math.pow(2,width+1)-1;
-	for (k=1;k<max;k+=2) { // all odd binaries up to 2^(w+1)-1
-/*		b=binLike(k);
-		if (b%10!=0) patlist.push(b); // this check may be useless, hehe...
-		*/
-		patlist.push(binLike(k));
-	}
-	return patlist;
+	return max;
 };
 
-var substitutionPossible = function (num, width) {
-	return true;
-};
-
-var checkClass = function (num, width) {
-	var i,j,x,max=Math.pow(10,width)-1,subs=substitutionPatterns(width);	
-	for (x=1;x<max;x++) {
-		for (i=0;i<subs.length;i++) {
-			if (isPrime(x)) {
-				for (j=;j<10;j++) {
-				}
-				if ( isPrime(x+subs[i]) )
+var varyZeros = function (num,width,k) {
+	var i,strnum;
+	k=k.toString();
+	strnum=(num.toString()).replace(/0/g,k);
+	//console.log(strnum);
+	for (i=strnum.length;i<width;i++) {
+		strnum=k+strnum;
 	}
+	return Number(strnum);
 };
 
