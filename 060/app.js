@@ -13,51 +13,6 @@ var dummyFunc = function (input) {
     return 0;
 };
 
-var listFivePrimeSets = function (limit) {
-	var i,candidate=[0,3,7,109,673],primes=listPrimes(limit);
-	for (i=0;i<limit;i++) {
-		candidate[0]=primes[i];
-		if (isPrimePairSet(candidate))
-			return candidate;
-	}
-	return [];
-}
-
-/* TOO SLOW
-var listFivePrimeSets = function (limit) {
-	var a,b,c,d,e,candidate=[],pentasets=[];
-	var primes=listPrimes(limit);
-	for (a=0;a<limit;a++) {
-	  for (b=0;b<limit;b++) {
-		if (b!=a) for (c=0;c<limit;c++) {
-		  if (c!=b
-			&& c!=a) for (d=0;d<limit;d++) {
-			  if (d!=c
-				&& d!=b
-				&& d!=a) for (e=0;e<limit;e++) {
-				  if (e!=d
-					&& e!=c
-					&& e!=b
-					&& e!=a) {
-					  candidate=[
-						  primes[a],
-						  primes[b],
-						  primes[c],
-						  primes[d],
-						  primes[e]
-					  ];
-					  if (isPrimePairSet(candidate))
-					  	pentasets.push(candidate);
-				  }
-				}
-			}
-		}
-	  }
-	}
-	return pentasets;
-};
-*/
-
 var minPrimePairSet = function (setofsets) {
 	var i,sum,pset=[],lset=[],min=2000000;
 	for (i=0;i<setofsets.length;i++) {
@@ -70,7 +25,6 @@ var minPrimePairSet = function (setofsets) {
 	}
 	return {"primes":pset, "sum":min};
 };
-
 
 var isPrime = function (num) {
 	var d;
@@ -93,6 +47,65 @@ var listPrimes = function (quantity) {
 	}
 	return plist;
 };
+
+var sumArray = function (array) {
+	var sum=0;
+	array.forEach(function (item) { sum+=item; });
+	return sum;
+}
+
+var addElement = function (array, newelement) {
+	var newarray=JSON.parse(JSON.stringify(array));
+	newarray[array.length]=newelement;
+	return newarray;
+}
+
+var listPrimePairs = function (size,primes) { /* primes = listPrimes(limit) */
+	var a,b,i,j,candidate,pairlist,primepairs=[];
+//	if (size==1) {primes;
+	if (size==2) {
+		var a,b;
+		for (a=0;a<primes.length;a++) {
+			for (b=0;b<primes.length;b++) {
+				if ( a!=b && isPrimePairSet([primes[a],primes[b]]) )
+					primepairs=addElement(primepairs,[primes[a],primes[b]]);
+			}
+		}
+		return primepairs;
+	}
+/*	if (size==3) {
+		pairlist=listPrimePairs(size-1,primes);
+		console.log(pairlist);
+		return pairlist;
+	}
+*/	pairlist=listPrimePairs(size-1,primes);
+//	console.log(pairlist);
+	for (i=0;i<primes.length;i++) {
+		for (j=0;j<pairlist.length;j++) {
+//			console.log(j,pairlist[j]);
+			if ( !(primes[i] in pairlist[j]) ) {
+				candidate=addElement(pairlist[j],primes[i]);
+//				console.log(candidate);
+				if (isPrimePairSet(candidate)) 
+					primepairs=addElement(primepairs,candidate);
+			}
+		}
+	}
+	return primepairs;
+};
+
+var firstPrimeSet = function (size,primes) {
+	var i,j,candidate,pairlist=listPrimePairs(size-1,listPrimes(500));
+	for (j=0;j<pairlist.length;j++) {
+		for (i=0;i<primes.length;i++) {
+			if ( !(primes[i] in pairlist[j]) ) {
+				candidate=addElement(pairlist[j],primes[i]);
+				if (isPrimePairSet(candidate)) return candidate;
+			}
+		}
+	}
+	return 0;
+}
 
 var isPrimePairSet = function (pset) {
 	var i,j;
