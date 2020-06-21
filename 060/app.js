@@ -13,7 +13,17 @@ var dummyFunc = function (input) {
     return 0;
 };
 
+var listFivePrimeSets = function (limit) {
+	var i,candidate=[0,3,7,109,673],primes=listPrimes(limit);
+	for (i=0;i<limit;i++) {
+		candidate[0]=primes[i];
+		if (isPrimePairSet(candidate))
+			return candidate;
+	}
+	return [];
+}
 
+/* TOO SLOW
 var listFivePrimeSets = function (limit) {
 	var a,b,c,d,e,candidate=[],pentasets=[];
 	var primes=listPrimes(limit);
@@ -46,12 +56,13 @@ var listFivePrimeSets = function (limit) {
 	}
 	return pentasets;
 };
+*/
 
 var minPrimePairSet = function (setofsets) {
 	var i,sum,pset=[],lset=[],min=2000000;
 	for (i=0;i<setofsets.length;i++) {
 		pset=setofsets[i];
-		sum=pset[0]+pset[1]+pset[2]+pset[3]+pset[4]
+		sum=pset[0]+pset[1]+pset[2]+pset[3]+pset[4];
 		if (sum<min) {
 			min=sum;
 			lset=pset;
