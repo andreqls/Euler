@@ -15,7 +15,7 @@ var dummyFunc = function (input) {
 
 var firstOfClass = function (rank) {
 	var w,i,ans;
-	for (w=6;w<10;w++) {
+	for (w=1;w<10;w++) {
 		ans=getClass(w);
 		if (ans.c==rank) {
 			if (isPrime(ans.v)) return ans.v;
@@ -38,9 +38,9 @@ var isPrime = function (num) {
 };
 
 var getClass = function (width) {
-	var i,num,count,max={"v":0,"c":0};
-	for (num=1;num<(Math.pow(10,width)-1);num+=2) {
-		if ( (num.toString()).includes('0') ) {
+	var i,num,count,max={"v":1,"c":1};
+	for (num=1;num<=(Math.pow(10,width)-1);num+=2) {
+		if ( (num.toString()).includes('0') || (num<Math.pow(10,width-1)) ) {
 			count=0;
 			if ( (num>Math.pow(10,width-1)) && isPrime(num) ) count++;
 			for (i=1;i<10;i++) {
