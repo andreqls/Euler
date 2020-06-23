@@ -18,11 +18,29 @@ var isPrime = function (num) {
 	var d;
 	if (num==2) return true;
 	if (num<2 || num%2==0) return false;
-	for (d=3;(d*d)<=num;d+=2) {
-		if (num%d==0) return 0;
-	}
+	for (d=3;(d*d)<=num;d+=2)
+		if (num%d==0) return false;
 	return true;
 };
+
+isPrimeFast = function (num,primes) { // speedboosted by having a list of ordered primes
+	var d,i,max=primes[primes.length-1];
+	if (num<max) return (num in primes);
+	if (num<(max*max)) {
+		for (i=0;(d*d)<=num;i++)
+			d=primes[i];
+			if (num%d==0) return false;
+		return true;
+	}
+	for (i=0;i<primes.length;i++) {
+		d=primes[i];
+		if (num%d==0) return false;
+	}
+	for (d=max+1;(d*d)<=num;d+=2)
+		if (num%d==0) return false;
+	return true;
+};
+		
 
 var listPrimes = function (quantity) {
 	var n,plist=[],count=1;
@@ -50,11 +68,11 @@ var isPrimePairSet = function (pset) {
 	return true;
 };*/
 
-var isPrimePairSet = function (pairlist, nprime) {
+var isPrimePairSet = function (pairlist,nprime,primes) {
 	var i;
 	for (i=0;i<pairlist.length;i++) {
-		if ( !isPrime(Number(nprime.toString()+pairlist[i].toString()))
-			|| !isPrime(Number(pairlist[i].toString()+nprime.toString())) )
+		if ( !isPrimeFast(Number(nprime.toString()+pairlist[i].toString()),primes)
+			|| !isPrimeFast(Number(pairlist[i].toString()+nprime.toString()),primes) )
 			return false;
 	}
 	return true;
@@ -67,7 +85,7 @@ var listPrimePairs = function (size,primes) { /* primes = listPrimes(limit) */
 		var a,b;
 		for (a=0;a<primes.length;a++) {
 			for (b=0;b<primes.length;b++) {
-				if ( a!=b && isPrimePairSet([primes[a]],primes[b]) )
+				if ( a!=b && isPrimePairSet([primes[a]],primes[b],primes) )
 					primepairs=addElement(primepairs,[primes[a],primes[b]]);
 			}
 		}
@@ -86,7 +104,7 @@ var listPrimePairs = function (size,primes) { /* primes = listPrimes(limit) */
 					console.log(primes[i],pairlist[j]);
 					console.log(isPrimePairSet(pairlist[i],primes[i]
 				}*/
-				if (isPrimePairSet(pairlist[j],primes[i])) {
+				if (isPrimePairSet(pairlist[j],primes[i]),primes) {
 					candidate=addElement(pairlist[j],primes[i]);
 					primepairs=addElement(primepairs,candidate);
 				/*	if (primes[i]==109) console.log(candidate,primepairs);*/
