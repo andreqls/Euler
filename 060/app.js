@@ -9,9 +9,21 @@ var main = function () {
 $(document).ready(main);
 
 /* functions */
-
 var dummyFunc = function (input) {
     return 0;
+};
+
+var minPrimePairSet = function (setofsets) {
+	var i,sum,pset=[],lset=[],min=2000000;
+	for (i=0;i<setofsets.length;i++) {
+		pset=setofsets[i];
+		sum=pset[0]+pset[1]+pset[2]+pset[3]+pset[4];
+		if (sum<min) {
+			min=sum;
+			lset=pset;
+		}
+	}
+	return {"primes":pset, "sum":min};
 };
 
 var isPrime = function (num) {
@@ -36,69 +48,6 @@ var listPrimes = function (quantity) {
 	return plist;
 };
 
-/*
-var isPrimePairSet = function (pset) {
-	var i,j;
-	for (i=0;i<pset.length;i++) {
-		for (j=0;j<pset.length;j++) {
-			if (i!=j) {
-				if (!isPrime(Number(pset[i].toString()+pset[j].toString())))
-					return false;
-			}
-		}
-	}
-	return true;
-};*/
-
-var isPrimePairSet = function (pairlist, nprime) {
-	var i;
-	for (i=0;i<pairlist.length;i++) {
-		if ( !isPrime(Number(nprime.toString()+pairlist[i].toString()))
-			|| !isPrime(Number(pairlist[i].toString()+nprime.toString())) )
-			return false;
-	}
-	return true;
-};
-
-var listPrimePairs = function (size,primes) { /* primes = listPrimes(limit) */
-	var a,b,i,j,candidate,pairlist,primepairs=[];
-	if (size<2) return [];
-	if (size==2) {
-		var a,b;
-		for (a=0;a<primes.length;a++) {
-			for (b=0;b<primes.length;b++) {
-				if ( a!=b && isPrimePairSet([primes[a]],primes[b]) )
-					primepairs=addElement(primepairs,[primes[a],primes[b]]);
-			}
-		}
-		return primepairs;
-	}
-	pairlist=listPrimePairs(size-1,primes);
-//	console.log(pairlist);
-	for (i=0;i<primes.length;i++) {
-		for (j=0;j<pairlist.length;j++) {
-//			console.log(j,pairlist[j]);
-			if ( !(primes[i] in pairlist[j]) ) {
-/*				candidate=addElement(pairlist[j],primes[i]);
-//				console.log(candidate);
-				if (isPrimePairSet(candidate))
-				if ( primes[i]==109 && pairlist[j][0]==3 && pairlist[j][1]==7 ) {
-					console.log(primes[i],pairlist[j]);
-					console.log(isPrimePairSet(pairlist[i],primes[i]
-				}*/
-				if (isPrimePairSet(pairlist[j],primes[i])) {
-					candidate=addElement(pairlist[j],primes[i]);
-					primepairs=addElement(primepairs,candidate);
-				/*	if (primes[i]==109) console.log(candidate,primepairs);*/
-				}
-			}
-		}
-	}
-	return primepairs;
-};
-
-/* AUXILIARY */
-
 var sumArray = function (array) {
 	var sum=0;
 	array.forEach(function (item) { sum+=item; });
@@ -111,9 +60,39 @@ var addElement = function (array, newelement) {
 	return newarray;
 }
 
-
-
-/* OLD */
+var listPrimePairs = function (size,primes) { /* primes = listPrimes(limit) */
+	var a,b,i,j,candidate,pairlist,primepairs=[];
+//	if (size==1) {primes;
+	if (size==2) {
+		var a,b;
+		for (a=0;a<primes.length;a++) {
+			for (b=0;b<primes.length;b++) {
+				if ( a!=b && isPrimePairSet([primes[a],primes[b]]) )
+					primepairs=addElement(primepairs,[primes[a],primes[b]]);
+			}
+		}
+		return primepairs;
+	}
+/*	if (size==3) {
+		pairlist=listPrimePairs(size-1,primes);
+		console.log(pairlist);
+		return pairlist;
+	}
+*/	pairlist=listPrimePairs(size-1,primes);
+//	console.log(pairlist);
+	for (i=0;i<primes.length;i++) {
+		for (j=0;j<pairlist.length;j++) {
+//			console.log(j,pairlist[j]);
+			if ( !(primes[i] in pairlist[j]) ) {
+				candidate=addElement(pairlist[j],primes[i]);
+//				console.log(candidate);
+				if (isPrimePairSet(candidate)) 
+					primepairs=addElement(primepairs,candidate);
+			}
+		}
+	}
+	return primepairs;
+};
 
 var firstPrimeSet = function (size,primes) {
 	var i,j,candidate,pairlist=listPrimePairs(size-1,listPrimes(500));
@@ -128,17 +107,16 @@ var firstPrimeSet = function (size,primes) {
 	return 0;
 }
 
-var minPrimePairSet = function (setofsets) {
-	var i,sum,pset=[],lset=[],min=2000000;
-	for (i=0;i<setofsets.length;i++) {
-		pset=setofsets[i];
-		sum=pset[0]+pset[1]+pset[2]+pset[3]+pset[4];
-		if (sum<min) {
-			min=sum;
-			lset=pset;
+var isPrimePairSet = function (pset) {
+	var i,j;
+	for (i=0;i<pset.length;i++) {
+		for (j=0;j<pset.length;j++) {
+			if (i!=j) {
+				if (!isPrime(Number(pset[i].toString()+pset[j].toString())))
+					return false;
+			}
 		}
 	}
-	return {"primes":pset, "sum":min};
+	return true;
 };
-
 
