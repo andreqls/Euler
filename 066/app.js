@@ -29,12 +29,12 @@ var genPerfectSquares = function (limit) {
 
 var getXfromD = function (D) {
 	if (Math.sqrt(D)==Math.floor(Math.sqrt(D))) return 0;
-	var x,y,x2,y2,maxy=Math.sqrt(Math.pow(2,64)-1);
-	for (y=1;y<maxy;y++) {
+	var x,y,x2,y2;
+	for (y=1n;true;y=y+BigInt('1')) {
 		y2=y*y;
-		x2=1+D*y2;
-		x=Math.sqrt(x2);
-		if (x==Math.floor(x)) return x;
+		x2=1n+D*y2;
+		x=BigInt(Math.sqrt(x2));
+		if (x==BigInt(Math.floor(x))) return x;
 	}
 };
 
@@ -47,8 +47,8 @@ var digDeepX = function (D) {
 };
 
 var getSolutions = function (limit) {
-	var D,maxD=0,maxX=0,solutions=[0];
-	for (D=1;D<=limit;D++) {
+	var D,maxD=0n,maxX=BigInt('0'),solutions=[0n];
+	for (D=1n;D<=limit;D=D+BigInt('1')) {
 		solutions[D]=getXfromD(D);
 		if (maxX<solutions[D]) { maxD=D; maxX=solutions[D]; }
 	}
