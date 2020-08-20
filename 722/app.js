@@ -42,6 +42,7 @@ var convergent = function (k,q) {
 		prev=sum;
 		sum+=sigma(k,n)*Math.pow(q,n);
 		if (sigDif(sum,prev)<0.00000000000000001) { // converged to necessary precision
+			console.log("Iterations=",n);
 			return sciNot(sum);
 		}
 	}
